@@ -27,6 +27,22 @@ void main() {
       act: (cubit) => cubit.synchronize(),
       expect: () => [isA<HomeLoading>(), isA<HomeFailure>()],
     );
+
+    blocTest<HomeCubit, HomeState>(
+      'reports that saved data is being used when refresh falls back to cache',
+      build: () => HomeCubit(
+        const _ClinicalReferenceRepository(Right(SyncOutcome.usingCachedData)),
+      ),
+      act: (cubit) => cubit.synchronize(),
+      expect: () => [
+        isA<HomeLoading>(),
+        isA<HomeReady>().having(
+          (state) => state.syncOutcome,
+          'sync outcome',
+          SyncOutcome.usingCachedData,
+        ),
+      ],
+    );
   });
 }
 

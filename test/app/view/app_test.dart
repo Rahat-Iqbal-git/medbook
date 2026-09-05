@@ -12,15 +12,39 @@ void main() {
   group('App', () {
     testWidgets('renders HomePage', (tester) async {
       await tester.pumpWidget(
-        App(clinicalReferenceRepository: _ClinicalReferenceRepository()),
+        const App(clinicalReferenceRepository: _ClinicalReferenceRepository()),
       );
       expect(find.byType(HomePage), findsOneWidget);
+    });
+
+    testWidgets('shows the offline status banner when cached data is used', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const App(
+          clinicalReferenceRepository: _ClinicalReferenceRepository(
+            SyncOutcome.usingCachedData,
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.text('Offline mode — using saved clinical reference data.'),
+        findsOneWidget,
+      );
     });
   });
 }
 
 final class _ClinicalReferenceRepository
     implements ClinicalReferenceRepository {
+  const _ClinicalReferenceRepository([
+    this.synchronizationOutcome = SyncOutcome.updated,
+  ]);
+
+  final SyncOutcome synchronizationOutcome;
+
   @override
   Future<Either<Failure, DiseaseDetails>> getDiseaseDetails({
     required int id,
@@ -38,5 +62,5 @@ final class _ClinicalReferenceRepository
 
   @override
   Future<Either<Failure, SyncOutcome>> synchronize() async =>
-      const Right(SyncOutcome.updated);
+      Right(synchronizationOutcome);
 }
