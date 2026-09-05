@@ -9,12 +9,17 @@ part 'search_state.dart';
 
 class SearchCubit extends Cubit<SearchState> {
   SearchCubit(
-    this._clinicalReferenceRepository, {
-    this.debounceDuration = const Duration(milliseconds: 300),
-  }) : super(const SearchIdle());
+    ClinicalReferenceRepository clinicalReferenceRepository, {
+    Duration debounceDuration = const Duration(milliseconds: 300),
+  }) : this._(clinicalReferenceRepository, debounceDuration);
+
+  SearchCubit._(
+    this._clinicalReferenceRepository,
+    this._debounceDuration,
+  ) : super(const SearchIdle());
 
   final ClinicalReferenceRepository _clinicalReferenceRepository;
-  final Duration debounceDuration;
+  final Duration _debounceDuration;
   Timer? _debounce;
   int _requestNumber = 0;
 
@@ -29,7 +34,7 @@ class SearchCubit extends Cubit<SearchState> {
 
     emit(SearchLoading(query));
     _debounce = Timer(
-      debounceDuration,
+      _debounceDuration,
       () => unawaited(_search(query, requestNumber)),
     );
   }
