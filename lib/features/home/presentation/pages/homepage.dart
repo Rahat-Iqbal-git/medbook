@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medbook/app/routing/app_routes.dart';
+import 'package:medbook/core/app_theme/extensions/medbook_brand_theme.dart';
 import 'package:medbook/core/app_theme/tokens/app_spacing.dart';
 import 'package:medbook/features/clinical_reference/domain/read_models/read_models.dart';
 import 'package:medbook/features/clinical_reference/domain/repositories/clinical_reference_repository.dart';
@@ -37,9 +38,18 @@ class _HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final brand = Theme.of(context).extension<MedbookBrandTheme>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Medbook'), centerTitle: true),
+      appBar: AppBar(
+        title: Text(
+          'Medbook',
+          style: textTheme.titleLarge?.copyWith(
+            color: brand?.brand ?? colors.primary,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) => switch (state) {
           HomeLoading() => Center(
