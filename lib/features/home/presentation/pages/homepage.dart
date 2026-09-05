@@ -164,13 +164,17 @@ class _DiseaseCards extends StatelessWidget {
       return const Text('No diseases are available.');
     }
 
-    return Row(
-      children: [
-        for (var index = 0; index < diseases.length; index++) ...[
-          Expanded(child: _DiseaseCard(disease: diseases[index])),
-          if (index < diseases.length - 1) const SizedBox(width: AppSpacing.md),
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var index = 0; index < diseases.length; index++) ...[
+            Expanded(child: _DiseaseCard(disease: diseases[index])),
+            if (index < diseases.length - 1)
+              const SizedBox(width: AppSpacing.md),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -186,6 +190,7 @@ class _DiseaseCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Card(
+      color: colors.surfaceContainerHighest,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => context.push(AppRoutes.disease(disease.id)),
@@ -219,6 +224,9 @@ class _MedicineList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     if (medicines.isEmpty) {
       return const Text('No medicines are available.');
     }
@@ -227,19 +235,24 @@ class _MedicineList extends StatelessWidget {
       children: [
         for (final medicine in medicines) ...[
           Card(
+            color: colors.surfaceContainerHighest,
             child: ListTile(
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.xs,
               ),
               leading: CircleAvatar(
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.surfaceContainerHighest,
-                child: const Icon(Icons.medication_outlined),
+                backgroundColor: colors.surfaceContainerHigh,
+                child: Icon(
+                  Icons.medication_outlined,
+                  color: colors.onSurface,
+                ),
               ),
-              title: Text(medicine.name),
-              subtitle: Text(medicine.genericName),
+              title: Text(medicine.name, style: textTheme.titleMedium),
+              subtitle: Text(
+                medicine.genericName,
+                style: textTheme.bodySmall,
+              ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push(AppRoutes.medicine(medicine.id)),
             ),
