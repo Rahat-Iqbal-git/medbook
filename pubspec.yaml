@@ -39,3 +39,14 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  fonts:
+    - family: InterText
+      fonts:
+        - asset: assets/fonts/inter/Inter_18pt-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter/Inter_18pt-Medium.ttf
+          weight: 500
+    - family: InterDisplay
+      fonts:
+        - asset: assets/fonts/inter/Inter_28pt-Bold.ttf
+          weight: 700
