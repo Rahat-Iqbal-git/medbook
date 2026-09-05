@@ -21,3 +21,5 @@ jobs:
     with:
       flutter_version: "3.44.x"
       run_bloc_lint: true
+      min_coverage: 80
+      coverage_excludes: '**/*.g.dart'
