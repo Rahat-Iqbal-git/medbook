@@ -1,0 +1,4 @@
+enum SyncOutcome {
+  updated,
+  usingCachedData,
+}
