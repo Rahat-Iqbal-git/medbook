@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:medbook/app/routing/app_routes.dart';
 import 'package:medbook/core/app_theme/tokens/app_spacing.dart';
 import 'package:medbook/features/clinical_reference/domain/repositories/clinical_reference_repository.dart';
 import 'package:medbook/features/clinical_reference/domain/search/clinical_search_result.dart';
@@ -151,6 +153,11 @@ class _SearchResultTile extends StatelessWidget {
       ),
       title: Text(result.title),
       subtitle: Text(result.subtitle),
+      onTap: () => context.push(
+        isDisease
+            ? AppRoutes.disease(result.id)
+            : AppRoutes.medicine(result.id),
+      ),
     );
   }
 }
