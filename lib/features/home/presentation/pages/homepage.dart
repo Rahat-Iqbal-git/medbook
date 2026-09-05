@@ -39,6 +39,7 @@ class _HomeView extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
+      appBar: AppBar(title: const Text('Medbook')),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) => switch (state) {
           HomeLoading() => Center(
@@ -127,8 +128,6 @@ class _ReadyContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Medbook', style: textTheme.headlineMedium),
-                const SizedBox(height: AppSpacing.lg),
                 TextField(
                   readOnly: true,
                   decoration: const InputDecoration(
