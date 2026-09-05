@@ -1,8 +1,10 @@
 import 'package:drift/drift.dart';
 import 'package:medbook/features/clinical_reference/data/database/clinical_database.dart';
+import 'package:medbook/features/clinical_reference/data/database/queries/clinical_details_query.dart';
 import 'package:medbook/features/clinical_reference/data/database/queries/clinical_search_query.dart';
 import 'package:medbook/features/clinical_reference/data/models/clinical_reference_dataset.dart';
 import 'package:medbook/features/clinical_reference/domain/entities/entities.dart';
+import 'package:medbook/features/clinical_reference/domain/read_models/read_models.dart';
 import 'package:medbook/features/clinical_reference/domain/search/clinical_search_result.dart';
 import 'package:medbook/features/clinical_reference/domain/search/normalize_search_text.dart';
 
@@ -10,6 +12,10 @@ abstract interface class ClinicalReferenceLocalDataSource {
   Future<bool> hasCachedData();
 
   Future<List<ClinicalSearchResult>> search({required String query});
+
+  Future<DiseaseDetails?> getDiseaseDetails({required int id});
+
+  Future<MedicineDetails?> getMedicineDetails({required int id});
 
   Future<void> replaceDataset({
     required ClinicalReferenceDataset dataset,
@@ -20,11 +26,13 @@ abstract interface class ClinicalReferenceLocalDataSource {
 final class ClinicalReferenceLocalDataSourceImpl
     implements ClinicalReferenceLocalDataSource {
   ClinicalReferenceLocalDataSourceImpl(this._database)
-    : _searchQuery = ClinicalSearchQuery(_database);
+    : _detailsQuery = ClinicalDetailsQuery(_database),
+      _searchQuery = ClinicalSearchQuery(_database);
 
   static const _metadataKey = 'clinical_reference';
 
   final ClinicalDatabase _database;
+  final ClinicalDetailsQuery _detailsQuery;
   final ClinicalSearchQuery _searchQuery;
 
   @override
@@ -39,6 +47,16 @@ final class ClinicalReferenceLocalDataSourceImpl
   @override
   Future<List<ClinicalSearchResult>> search({required String query}) {
     return _searchQuery.search(query);
+  }
+
+  @override
+  Future<DiseaseDetails?> getDiseaseDetails({required int id}) {
+    return _detailsQuery.getDiseaseDetails(id);
+  }
+
+  @override
+  Future<MedicineDetails?> getMedicineDetails({required int id}) {
+    return _detailsQuery.getMedicineDetails(id);
   }
 
   @override
