@@ -10,6 +10,7 @@ environment:
 dependencies:
   bloc: ^9.2.1
   dio: ^5.9.0
+  dot_matrix_loader: ^0.2.0
   drift: ^2.34.4
   drift_flutter: ^0.3.1
   flutter:

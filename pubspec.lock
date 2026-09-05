@@ -265,6 +265,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
+  dot_matrix_loader:
+    dependency: "direct main"
+    description:
+      name: dot_matrix_loader
+      sha256: "881b80d94467181471eec4a393eb136319f55edd747175f76b33846037a8d0f7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   drift:
     dependency: "direct main"
     description:

@@ -3,13 +3,13 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:medbook/app/app.dart';
-import 'package:medbook/counter/counter.dart';
+import 'package:medbook/features/home/presentation/pages/homepage.dart';
 
 void main() {
   group('App', () {
-    testWidgets('renders CounterPage', (tester) async {
+    testWidgets('renders HomePage', (tester) async {
       await tester.pumpWidget(App());
-      expect(find.byType(CounterPage), findsOneWidget);
+      expect(find.byType(HomePage), findsOneWidget);
     });
   });
 }
