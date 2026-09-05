@@ -29,3 +29,8 @@ final class LocalStorageFailure extends Failure {
   const LocalStorageFailure({String? message})
     : super(message: message ?? 'Local Storage Failure');
 }
+
+final class NotFoundFailure extends Failure {
+  const NotFoundFailure({String? message})
+    : super(message: message ?? 'The requested item was not found.');
+}
