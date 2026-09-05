@@ -26,5 +26,6 @@ jobs:
     with:
       allowed: "MIT,BSD-3-Clause,BSD-2-Clause,Apache-2.0,Zlib"
       flutter_version: "3.44.x"
-      # Transitive dev dependency of bloc_lint with no detectable license.
-      skip_packages: "pubspec_lock_parse"
+      # `pubspec_lock_parse` has no detectable license. `sqlcipher_flutter_libs`
+      # is an obsolete, no-op transitive dependency of drift_flutter.
+      skip_packages: "pubspec_lock_parse,sqlcipher_flutter_libs"
