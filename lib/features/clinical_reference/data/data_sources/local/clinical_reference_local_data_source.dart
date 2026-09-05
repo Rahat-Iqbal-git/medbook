@@ -4,9 +4,9 @@ import 'package:medbook/features/clinical_reference/data/models/clinical_referen
 import 'package:medbook/features/clinical_reference/domain/entities/entities.dart';
 import 'package:medbook/features/clinical_reference/domain/search/normalize_search_text.dart';
 
-// Keeps local persistence replaceable at the repository boundary.
-// ignore: one_member_abstracts
 abstract interface class ClinicalReferenceLocalDataSource {
+  Future<bool> hasCachedData();
+
   Future<void> replaceDataset({
     required ClinicalReferenceDataset dataset,
     required DateTime synchronizedAt,
@@ -20,6 +20,15 @@ final class ClinicalReferenceLocalDataSourceImpl
   static const _metadataKey = 'clinical_reference';
 
   final ClinicalDatabase _database;
+
+  @override
+  Future<bool> hasCachedData() async {
+    final metadata = await (_database.select(
+      _database.syncMetadata,
+    )..limit(1)).getSingleOrNull();
+
+    return metadata != null;
+  }
 
   @override
   Future<void> replaceDataset({

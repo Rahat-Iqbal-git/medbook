@@ -24,3 +24,8 @@ final class ParsingFailure extends Failure {
 final class ValidationFailure extends Failure {
   const ValidationFailure({required super.message});
 }
+
+final class LocalStorageFailure extends Failure {
+  const LocalStorageFailure({String? message})
+    : super(message: message ?? 'Local Storage Failure');
+}

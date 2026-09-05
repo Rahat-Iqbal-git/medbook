@@ -17,6 +17,17 @@ void main() {
 
     tearDown(() => database.close());
 
+    test('reports whether downloaded data is available', () async {
+      expect(await dataSource.hasCachedData(), isFalse);
+
+      await dataSource.replaceDataset(
+        dataset: _dataset(),
+        synchronizedAt: DateTime.utc(2026, 9, 5, 12),
+      );
+
+      expect(await dataSource.hasCachedData(), isTrue);
+    });
+
     test('replaces the dataset and stores searchable text', () async {
       await dataSource.replaceDataset(
         dataset: _dataset(),
