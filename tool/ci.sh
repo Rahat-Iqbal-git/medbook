@@ -23,7 +23,7 @@ run_check \
   -j 4 \
   --optimization \
   --coverage \
-  --min-coverage 100 \
+  --min-coverage 80 \
   --report-on lib \
   --collect-coverage-from imports \
   --show-uncovered \

@@ -1,6 +1,14 @@
 import 'package:medbook/app/app.dart';
 import 'package:medbook/bootstrap.dart';
+import 'package:medbook/core/config/config.dart';
 
 Future<void> main() async {
-  await bootstrap(() => const App());
+  final environmentConfig = EnvironmentFactory.create(
+    AppEnvironment.production,
+  );
+
+  await bootstrap(
+    () => const App(),
+    environmentConfig: environmentConfig,
+  );
 }

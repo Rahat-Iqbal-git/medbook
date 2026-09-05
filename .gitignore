@@ -86,6 +86,10 @@ unlinked_spec.ds
 # Coverage
 coverage/
 
+# Environment configuration. Commit templates, not local values.
+env/*.json
+!env/*.example.json
+
 # Submodules
 packages/**/pubspec.lock
 

@@ -18,18 +18,35 @@ This project contains 3 flavors:
 - staging
 - production
 
+Create local environment files from the committed templates before running the
+app:
+
+```sh
+$ cp env/dev.example.json env/dev.json
+$ cp env/staging.example.json env/staging.json
+$ cp env/prod.example.json env/prod.json
+```
+
 To run the desired flavor either use the launch configuration in VSCode/Android Studio or use the following commands:
 
 ```sh
 # Development
-$ flutter run --flavor development --target lib/main_development.dart
+$ flutter run --flavor development --target lib/main_development.dart \
+    --dart-define-from-file=env/dev.json
 
 # Staging
-$ flutter run --flavor staging --target lib/main_staging.dart
+$ flutter run --flavor staging --target lib/main_staging.dart \
+    --dart-define-from-file=env/staging.json
 
 # Production
-$ flutter run --flavor production --target lib/main_production.dart
+$ flutter run --flavor production --target lib/main_production.dart \
+    --dart-define-from-file=env/prod.json
 ```
+
+The files in `env/` provide the public mock API URL and each flavor's logging
+preference. Local `*.json` values are ignored by Git; only `*.example.json`
+templates are committed. `MEDBOOK_API_BASE_URL` is required and must be an
+absolute URL. Production builds always disable network logging.
 
 _\*Medbook works on iOS, Android, Web, and Windows._
 
