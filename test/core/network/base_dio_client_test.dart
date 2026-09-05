@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:medbook/core/failures/failure.dart';
-import 'package:medbook/core/network/base_dio_client.dart';
-import 'package:medbook/core/network/dio_failure_mapper.dart';
+import 'package:medbook/core/network/base_dio_client/base_dio_client.dart';
+import 'package:medbook/core/network/base_dio_client/dio_failure_mapper.dart';
 
 void main() {
   group('BaseDioClient', () {

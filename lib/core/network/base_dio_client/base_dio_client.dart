@@ -1,16 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:medbook/core/failures/failure.dart';
-import 'package:medbook/core/network/dio_failure_mapper.dart';
+import 'package:medbook/core/network/base_dio_client/dio_failure_mapper.dart';
 
 /// base client for API-specific Dio clients.
 abstract class BaseDioClient {
   BaseDioClient(
-    this._dio, {
+    Dio dio, {
     required String baseUrl,
     bool enableLogging = false,
     DioFailureMapper? failureMapper,
-  }) : _failureMapper = failureMapper ?? const DioFailureMapper() {
+  }) : _dio = dio,
+       _failureMapper = failureMapper ?? const DioFailureMapper() {
     _dio
       ..options.baseUrl = baseUrl
       ..options.connectTimeout = const Duration(seconds: 15)
