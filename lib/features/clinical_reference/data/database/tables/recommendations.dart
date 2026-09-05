@@ -10,6 +10,7 @@ import 'package:medbook/features/clinical_reference/data/database/tables/medicin
   name: 'recommendations_by_medicine',
   columns: {#medicineId},
 )
+@DataClassName('TreatmentRecommendationRow')
 class TreatmentRecommendations extends Table {
   IntColumn get id => integer()();
   IntColumn get diseaseId => integer().references(

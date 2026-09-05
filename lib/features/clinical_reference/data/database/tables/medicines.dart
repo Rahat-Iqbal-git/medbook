@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
   name: 'medicines_by_normalized_generic_name',
   columns: {#normalizedGenericName},
 )
+@DataClassName('MedicineRow')
 class Medicines extends Table {
   IntColumn get id => integer()();
   TextColumn get name => text()();

@@ -5,6 +5,7 @@ import 'package:medbook/features/clinical_reference/data/database/tables/disease
   name: 'disease_keywords_by_normalized_keyword',
   columns: {#normalizedKeyword},
 )
+@DataClassName('DiseaseKeywordRow')
 class DiseaseKeywords extends Table {
   IntColumn get diseaseId => integer().references(
     Diseases,
