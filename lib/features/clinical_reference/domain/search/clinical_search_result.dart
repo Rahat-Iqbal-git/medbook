@@ -1,4 +1,4 @@
-enum ClinicalSearchResultType { disease, medicine, recommendation }
+enum ClinicalSearchResultType { disease, medicine }
 
 class ClinicalSearchResult {
   const ClinicalSearchResult({
