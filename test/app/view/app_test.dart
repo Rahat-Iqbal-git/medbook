@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:medbook/app/app.dart';
@@ -7,6 +8,7 @@ import 'package:medbook/features/clinical_reference/domain/repositories/clinical
 import 'package:medbook/features/clinical_reference/domain/search/clinical_search_result.dart';
 import 'package:medbook/features/clinical_reference/domain/sync/sync_outcome.dart';
 import 'package:medbook/features/home/presentation/pages/homepage.dart';
+import 'package:medbook/features/search/presentation/pages/search_page.dart';
 
 void main() {
   group('App', () {
@@ -40,6 +42,22 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('opens search and shows results', (tester) async {
+      await tester.pumpWidget(
+        const App(clinicalReferenceRepository: _ClinicalReferenceRepository()),
+      );
+      await tester.pump();
+
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+      expect(find.byType(SearchPage), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField), 'aster');
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+      expect(find.text('Aster Condition'), findsOneWidget);
+    });
   });
 }
 
@@ -68,7 +86,14 @@ final class _ClinicalReferenceRepository
   @override
   Future<Either<Failure, List<ClinicalSearchResult>>> search({
     required String query,
-  }) => throw UnimplementedError();
+  }) async => const Right([
+    ClinicalSearchResult(
+      id: 1,
+      type: ClinicalSearchResultType.disease,
+      title: 'Aster Condition',
+      subtitle: 'Respiratory',
+    ),
+  ]);
 
   @override
   Future<Either<Failure, SyncOutcome>> synchronize() async =>

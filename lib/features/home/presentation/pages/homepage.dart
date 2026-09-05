@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dot_matrix_loader/dot_matrix_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medbook/core/app_theme/tokens/app_spacing.dart';
 import 'package:medbook/features/clinical_reference/domain/read_models/read_models.dart';
 import 'package:medbook/features/clinical_reference/domain/repositories/clinical_reference_repository.dart';
@@ -127,11 +128,13 @@ class _ReadyContent extends StatelessWidget {
               children: [
                 Text('Medbook', style: textTheme.headlineMedium),
                 const SizedBox(height: AppSpacing.lg),
-                const TextField(
-                  decoration: InputDecoration(
+                TextField(
+                  readOnly: true,
+                  decoration: const InputDecoration(
                     hintText: 'Search diseases or medicines',
                     prefixIcon: Icon(Icons.search),
                   ),
+                  onTap: () => context.push('/search'),
                 ),
                 const SizedBox(height: AppSpacing.xxl),
                 Text('Diseases', style: textTheme.titleLarge),
