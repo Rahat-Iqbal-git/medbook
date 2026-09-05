@@ -17,5 +17,5 @@ abstract final class ColorPalette {
   static const Color hairlineMid = Color(0xFF4B4B4B);
   static const Color mute = Color(0xFFAFAFAF);
   static const Color onDark = Color(0xFFFFFFFF);
-  static const Color link = Color(0xFF0000EE);
+  static const Color link = Color.fromARGB(255, 3, 3, 135);
 }

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:medbook/core/app_theme/extensions/app_button_theme.dart';
 import 'package:medbook/core/app_theme/extensions/app_spacing_theme.dart';
+import 'package:medbook/core/app_theme/extensions/medbook_brand_theme.dart';
 import 'package:medbook/core/app_theme/tokens/app_radius.dart';
 import 'package:medbook/core/app_theme/tokens/app_spacing.dart';
 import 'package:medbook/core/app_theme/tokens/app_typography.dart';
 import 'package:medbook/core/app_theme/tokens/color_palette.dart';
+import 'package:medbook/core/app_theme/tokens/medbook_brand_color.dart';
 
 abstract final class AppTheme {
   const AppTheme._();
@@ -56,6 +58,10 @@ abstract final class AppTheme {
       scaffoldBackgroundColor: colors.surface,
       textTheme: textTheme,
       extensions: [
+        const MedbookBrandTheme(
+          brand: MedbookBrandColor.brand,
+          onBrand: MedbookBrandColor.onBrand,
+        ),
         AppSpacingTheme.fallback,
         AppButtonTheme(
           primary: FilledButton.styleFrom(
