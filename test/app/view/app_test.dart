@@ -15,6 +15,12 @@ void main() {
         const App(clinicalReferenceRepository: _ClinicalReferenceRepository()),
       );
       expect(find.byType(HomePage), findsOneWidget);
+      await tester.pump();
+      expect(find.text('Aster Condition'), findsOneWidget);
+      expect(find.text('Lumen Fever'), findsOneWidget);
+      expect(find.text('Medicine Alpha'), findsOneWidget);
+      expect(find.text('Medicine Beta'), findsOneWidget);
+      expect(find.text('Medicine Gamma'), findsOneWidget);
     });
 
     testWidgets('shows the offline status banner when cached data is used', (
@@ -46,6 +52,10 @@ final class _ClinicalReferenceRepository
   final SyncOutcome synchronizationOutcome;
 
   @override
+  Future<Either<Failure, ClinicalReferenceOverview>> getOverview() async =>
+      const Right(_overview);
+
+  @override
   Future<Either<Failure, DiseaseDetails>> getDiseaseDetails({
     required int id,
   }) => throw UnimplementedError();
@@ -64,3 +74,15 @@ final class _ClinicalReferenceRepository
   Future<Either<Failure, SyncOutcome>> synchronize() async =>
       Right(synchronizationOutcome);
 }
+
+const _overview = ClinicalReferenceOverview(
+  diseases: [
+    DiseaseSummary(id: 1, name: 'Aster Condition', category: 'Respiratory'),
+    DiseaseSummary(id: 2, name: 'Lumen Fever', category: 'Infectious'),
+  ],
+  medicines: [
+    MedicineSummary(id: 10, name: 'Medicine Alpha', genericName: 'Formula A'),
+    MedicineSummary(id: 11, name: 'Medicine Beta', genericName: 'Formula B'),
+    MedicineSummary(id: 12, name: 'Medicine Gamma', genericName: 'Formula C'),
+  ],
+);

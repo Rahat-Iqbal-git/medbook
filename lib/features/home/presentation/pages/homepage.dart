@@ -4,6 +4,7 @@ import 'package:dot_matrix_loader/dot_matrix_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medbook/core/app_theme/tokens/app_spacing.dart';
+import 'package:medbook/features/clinical_reference/domain/read_models/read_models.dart';
 import 'package:medbook/features/clinical_reference/domain/repositories/clinical_reference_repository.dart';
 import 'package:medbook/features/clinical_reference/domain/sync/sync_outcome.dart';
 import 'package:medbook/features/home/presentation/cubit/home_cubit.dart';
@@ -44,8 +45,9 @@ class _HomeView extends StatelessWidget {
               textTheme: textTheme,
             ),
           ),
-          HomeReady(:final syncOutcome) => _ReadyContent(
+          HomeReady(:final syncOutcome, :final overview) => _ReadyContent(
             syncOutcome: syncOutcome,
+            overview: overview,
             textTheme: textTheme,
           ),
           HomeFailure(:final failure) => Center(
@@ -96,9 +98,14 @@ class _LoadingContent extends StatelessWidget {
 }
 
 class _ReadyContent extends StatelessWidget {
-  const _ReadyContent({required this.syncOutcome, required this.textTheme});
+  const _ReadyContent({
+    required this.syncOutcome,
+    required this.overview,
+    required this.textTheme,
+  });
 
   final SyncOutcome syncOutcome;
+  final ClinicalReferenceOverview overview;
   final TextTheme textTheme;
 
   @override
@@ -108,17 +115,134 @@ class _ReadyContent extends StatelessWidget {
         if (syncOutcome == SyncOutcome.usingCachedData)
           const OfflineStatusBanner(),
         Expanded(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xxl),
-              child: Text(
-                'Clinical reference is ready.',
-                style: textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.md,
+              AppSpacing.lg,
+              AppSpacing.xxxl,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Medbook', style: textTheme.headlineMedium),
+                const SizedBox(height: AppSpacing.lg),
+                const TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search diseases or medicines',
+                    prefixIcon: Icon(Icons.search),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxl),
+                Text('Diseases', style: textTheme.titleLarge),
+                const SizedBox(height: AppSpacing.md),
+                _DiseaseCards(diseases: overview.diseases),
+                const SizedBox(height: AppSpacing.xxl),
+                Text('Medicines', style: textTheme.titleLarge),
+                const SizedBox(height: AppSpacing.md),
+                _MedicineList(medicines: overview.medicines),
+              ],
             ),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _DiseaseCards extends StatelessWidget {
+  const _DiseaseCards({required this.diseases});
+
+  final List<DiseaseSummary> diseases;
+
+  @override
+  Widget build(BuildContext context) {
+    if (diseases.isEmpty) {
+      return const Text('No diseases are available.');
+    }
+
+    return Row(
+      children: [
+        for (var index = 0; index < diseases.length; index++) ...[
+          Expanded(child: _DiseaseCard(disease: diseases[index])),
+          if (index < diseases.length - 1)
+            const SizedBox(width: AppSpacing.md),
+        ],
+      ],
+    );
+  }
+}
+
+class _DiseaseCard extends StatelessWidget {
+  const _DiseaseCard({required this.disease});
+
+  final DiseaseSummary disease;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {},
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.health_and_safety_outlined, color: colors.primary),
+              const SizedBox(height: AppSpacing.xl),
+              Text(
+                disease.name,
+                style: textTheme.titleMedium,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(disease.category, style: textTheme.bodySmall),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MedicineList extends StatelessWidget {
+  const _MedicineList({required this.medicines});
+
+  final List<MedicineSummary> medicines;
+
+  @override
+  Widget build(BuildContext context) {
+    if (medicines.isEmpty) {
+      return const Text('No medicines are available.');
+    }
+
+    return Column(
+      children: [
+        for (final medicine in medicines) ...[
+          Card(
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.xs,
+              ),
+              leading: CircleAvatar(
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
+                child: const Icon(Icons.medication_outlined),
+              ),
+              title: Text(medicine.name),
+              subtitle: Text(medicine.genericName),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {},
+            ),
+          ),
+          if (medicine != medicines.last) const SizedBox(height: AppSpacing.sm),
+        ],
       ],
     );
   }

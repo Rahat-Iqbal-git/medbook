@@ -7,6 +7,8 @@ import 'package:medbook/features/clinical_reference/domain/sync/sync_outcome.dar
 abstract interface class ClinicalReferenceRepository {
   Future<Either<Failure, SyncOutcome>> synchronize();
 
+  Future<Either<Failure, ClinicalReferenceOverview>> getOverview();
+
   Future<Either<Failure, List<ClinicalSearchResult>>> search({
     required String query,
   });

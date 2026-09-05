@@ -53,6 +53,10 @@ final class _ClinicalReferenceRepository
   final Either<Failure, SyncOutcome> synchronizationResult;
 
   @override
+  Future<Either<Failure, ClinicalReferenceOverview>> getOverview() async =>
+      const Right(_overview);
+
+  @override
   Future<Either<Failure, DiseaseDetails>> getDiseaseDetails({
     required int id,
   }) => throw UnimplementedError();
@@ -71,3 +75,15 @@ final class _ClinicalReferenceRepository
   Future<Either<Failure, SyncOutcome>> synchronize() async =>
       synchronizationResult;
 }
+
+const _overview = ClinicalReferenceOverview(
+  diseases: [
+    DiseaseSummary(id: 1, name: 'Aster Condition', category: 'Respiratory'),
+    DiseaseSummary(id: 2, name: 'Lumen Fever', category: 'Infectious'),
+  ],
+  medicines: [
+    MedicineSummary(id: 10, name: 'Medicine Alpha', genericName: 'Formula A'),
+    MedicineSummary(id: 11, name: 'Medicine Beta', genericName: 'Formula B'),
+    MedicineSummary(id: 12, name: 'Medicine Gamma', genericName: 'Formula C'),
+  ],
+);

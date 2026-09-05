@@ -11,6 +11,8 @@ import 'package:medbook/features/clinical_reference/domain/search/normalize_sear
 abstract interface class ClinicalReferenceLocalDataSource {
   Future<bool> hasCachedData();
 
+  Future<ClinicalReferenceOverview> getOverview();
+
   Future<List<ClinicalSearchResult>> search({required String query});
 
   Future<DiseaseDetails?> getDiseaseDetails({required int id});
@@ -42,6 +44,41 @@ final class ClinicalReferenceLocalDataSourceImpl
     )..limit(1)).getSingleOrNull();
 
     return metadata != null;
+  }
+
+  @override
+  Future<ClinicalReferenceOverview> getOverview() async {
+    final diseaseRows =
+        await (_database.select(_database.diseases)
+              ..orderBy([(row) => OrderingTerm.asc(row.id)])
+              ..limit(2))
+            .get();
+    final medicineRows =
+        await (_database.select(_database.medicines)
+              ..orderBy([(row) => OrderingTerm.asc(row.id)])
+              ..limit(3))
+            .get();
+
+    return ClinicalReferenceOverview(
+      diseases: diseaseRows
+          .map(
+            (row) => DiseaseSummary(
+              id: row.id,
+              name: row.name,
+              category: row.category,
+            ),
+          )
+          .toList(growable: false),
+      medicines: medicineRows
+          .map(
+            (row) => MedicineSummary(
+              id: row.id,
+              name: row.name,
+              genericName: row.genericName,
+            ),
+          )
+          .toList(growable: false),
+    );
   }
 
   @override

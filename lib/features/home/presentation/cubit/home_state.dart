@@ -9,9 +9,10 @@ final class HomeLoading extends HomeState {
 }
 
 final class HomeReady extends HomeState {
-  const HomeReady(this.syncOutcome);
+  const HomeReady({required this.syncOutcome, required this.overview});
 
   final SyncOutcome syncOutcome;
+  final ClinicalReferenceOverview overview;
 }
 
 final class HomeFailure extends HomeState {
