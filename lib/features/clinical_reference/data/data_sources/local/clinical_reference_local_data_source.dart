@@ -1,11 +1,15 @@
 import 'package:drift/drift.dart';
 import 'package:medbook/features/clinical_reference/data/database/clinical_database.dart';
+import 'package:medbook/features/clinical_reference/data/database/queries/clinical_search_query.dart';
 import 'package:medbook/features/clinical_reference/data/models/clinical_reference_dataset.dart';
 import 'package:medbook/features/clinical_reference/domain/entities/entities.dart';
+import 'package:medbook/features/clinical_reference/domain/search/clinical_search_result.dart';
 import 'package:medbook/features/clinical_reference/domain/search/normalize_search_text.dart';
 
 abstract interface class ClinicalReferenceLocalDataSource {
   Future<bool> hasCachedData();
+
+  Future<List<ClinicalSearchResult>> search({required String query});
 
   Future<void> replaceDataset({
     required ClinicalReferenceDataset dataset,
@@ -15,11 +19,13 @@ abstract interface class ClinicalReferenceLocalDataSource {
 
 final class ClinicalReferenceLocalDataSourceImpl
     implements ClinicalReferenceLocalDataSource {
-  const ClinicalReferenceLocalDataSourceImpl(this._database);
+  ClinicalReferenceLocalDataSourceImpl(this._database)
+    : _searchQuery = ClinicalSearchQuery(_database);
 
   static const _metadataKey = 'clinical_reference';
 
   final ClinicalDatabase _database;
+  final ClinicalSearchQuery _searchQuery;
 
   @override
   Future<bool> hasCachedData() async {
@@ -28,6 +34,11 @@ final class ClinicalReferenceLocalDataSourceImpl
     )..limit(1)).getSingleOrNull();
 
     return metadata != null;
+  }
+
+  @override
+  Future<List<ClinicalSearchResult>> search({required String query}) {
+    return _searchQuery.search(query);
   }
 
   @override
