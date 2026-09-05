@@ -10,6 +10,21 @@ Offline clinical reference prototype
 
 ---
 
+## Offline search
+
+Search reads only from the local database, so it continues to work without a
+network connection after the first successful download. It is case-insensitive,
+supports partial and multi-word queries, and searches disease names and
+keywords, medicine names and generic names, and recommendation details.
+
+Results are ordered by relevance: exact names first, then name prefixes,
+partial names, generic names, disease keywords, and recommendation text. Ties
+are resolved by title, result type, and ID so the same query always returns the
+same order. Recommendation matches open the related disease or medicine rather
+than appearing as a separate result type.
+
+---
+
 ## Getting Started 🚀
 
 This project contains 3 flavors:
