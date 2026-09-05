@@ -24,13 +24,20 @@ void main() {
       expect(config.enableNetworkLogging, isFalse);
     });
 
-    test('requires an API base URL', () {
+    test('reads the API base URL from the compile-time environment', () {
       final config = EnvironmentFactory.create(AppEnvironment.development);
-
-      expect(
-        () => config.medbookApiBaseUrl,
-        throwsA(isA<StateError>()),
+      const configuredBaseUrl = String.fromEnvironment(
+        'MEDBOOK_API_BASE_URL',
       );
+
+      if (configuredBaseUrl.isEmpty) {
+        expect(
+          () => config.medbookApiBaseUrl,
+          throwsA(isA<StateError>()),
+        );
+      } else {
+        expect(config.medbookApiBaseUrl, configuredBaseUrl);
+      }
     });
   });
 }
