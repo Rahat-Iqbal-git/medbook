@@ -22,14 +22,22 @@ To run the desired flavor either use the launch configuration in VSCode/Android 
 
 ```sh
 # Development
-$ flutter run --flavor development --target lib/main_development.dart
+$ flutter run --flavor development --target lib/main_development.dart \
+    --dart-define=MEDBOOK_API_BASE_URL=https://your-mock-api.example/api
 
 # Staging
-$ flutter run --flavor staging --target lib/main_staging.dart
+$ flutter run --flavor staging --target lib/main_staging.dart \
+    --dart-define=MEDBOOK_API_BASE_URL=https://your-mock-api.example/api
 
 # Production
-$ flutter run --flavor production --target lib/main_production.dart
+$ flutter run --flavor production --target lib/main_production.dart \
+    --dart-define=MEDBOOK_API_BASE_URL=https://your-mock-api.example/api
 ```
+
+`MEDBOOK_API_BASE_URL` is required and must be an absolute URL. Network
+logging defaults to enabled outside production and can be disabled with
+`--dart-define=ENABLE_NETWORK_LOGGING=false`. Production builds always disable
+network logging.
 
 _\*Medbook works on iOS, Android, Web, and Windows._
 
