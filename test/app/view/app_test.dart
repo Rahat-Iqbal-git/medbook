@@ -38,7 +38,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.text('Offline mode — using saved clinical reference data.'),
+        find.text('Offline mode - using saved clinical reference data.'),
         findsOneWidget,
       );
     });
