@@ -97,41 +97,8 @@ class _SearchResults extends StatelessWidget {
   final List<ClinicalSearchResult> results;
 
   @override
-  Widget build(BuildContext context) {
-    final diseases = results
-        .where((result) => result.type == ClinicalSearchResultType.disease)
-        .toList(growable: false);
-    final medicines = results
-        .where((result) => result.type == ClinicalSearchResultType.medicine)
-        .toList(growable: false);
-
-    return ListView(
-      children: [
-        if (diseases.isNotEmpty) ...[
-          const _ResultSectionTitle('Diseases'),
-          ...diseases.map(_SearchResultTile.new),
-        ],
-        if (medicines.isNotEmpty) ...[
-          const _ResultSectionTitle('Medicines'),
-          ...medicines.map(_SearchResultTile.new),
-        ],
-      ],
-    );
-  }
-}
-
-class _ResultSectionTitle extends StatelessWidget {
-  const _ResultSectionTitle(this.title);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(
-      top: AppSpacing.sm,
-      bottom: AppSpacing.xs,
-    ),
-    child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+  Widget build(BuildContext context) => ListView(
+    children: results.map(_SearchResultTile.new).toList(growable: false),
   );
 }
 

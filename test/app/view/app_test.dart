@@ -58,6 +58,43 @@ void main() {
       await tester.pump();
       expect(find.text('Aster Condition'), findsOneWidget);
     });
+
+    testWidgets('preserves repository ranking across result types', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const App(
+          clinicalReferenceRepository: _ClinicalReferenceRepository(
+            SyncOutcome.updated,
+            [
+              ClinicalSearchResult(
+                id: 10,
+                type: ClinicalSearchResultType.medicine,
+                title: 'Medicine Alpha',
+                subtitle: 'Formula A',
+              ),
+              ClinicalSearchResult(
+                id: 8,
+                type: ClinicalSearchResultType.disease,
+                title: 'Prism Vision Haze',
+                subtitle: 'Ophthalmology',
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'first line');
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+
+      final medicinePosition = tester.getTopLeft(find.text('Medicine Alpha'));
+      final diseasePosition = tester.getTopLeft(find.text('Prism Vision Haze'));
+      expect(medicinePosition.dy, lessThan(diseasePosition.dy));
+    });
   });
 }
 
@@ -65,9 +102,18 @@ final class _ClinicalReferenceRepository
     implements ClinicalReferenceRepository {
   const _ClinicalReferenceRepository([
     this.synchronizationOutcome = SyncOutcome.updated,
+    this.searchResults = const [
+      ClinicalSearchResult(
+        id: 1,
+        type: ClinicalSearchResultType.disease,
+        title: 'Aster Condition',
+        subtitle: 'Respiratory',
+      ),
+    ],
   ]);
 
   final SyncOutcome synchronizationOutcome;
+  final List<ClinicalSearchResult> searchResults;
 
   @override
   Future<Either<Failure, ClinicalReferenceOverview>> getOverview() async =>
@@ -86,14 +132,7 @@ final class _ClinicalReferenceRepository
   @override
   Future<Either<Failure, List<ClinicalSearchResult>>> search({
     required String query,
-  }) async => const Right([
-    ClinicalSearchResult(
-      id: 1,
-      type: ClinicalSearchResultType.disease,
-      title: 'Aster Condition',
-      subtitle: 'Respiratory',
-    ),
-  ]);
+  }) async => Right(searchResults);
 
   @override
   Future<Either<Failure, SyncOutcome>> synchronize() async =>
