@@ -169,8 +169,7 @@ class _DiseaseCards extends StatelessWidget {
       children: [
         for (var index = 0; index < diseases.length; index++) ...[
           Expanded(child: _DiseaseCard(disease: diseases[index])),
-          if (index < diseases.length - 1)
-            const SizedBox(width: AppSpacing.md),
+          if (index < diseases.length - 1) const SizedBox(width: AppSpacing.md),
         ],
       ],
     );
@@ -235,8 +234,9 @@ class _MedicineList extends StatelessWidget {
                 vertical: AppSpacing.xs,
               ),
               leading: CircleAvatar(
-                backgroundColor:
-                    Theme.of(context).colorScheme.surfaceContainerHighest,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest,
                 child: const Icon(Icons.medication_outlined),
               ),
               title: Text(medicine.name),
