@@ -5,6 +5,7 @@ import 'package:medbook/features/clinical_reference/data/data_sources/data_sourc
 import 'package:medbook/features/clinical_reference/data/dtos/dtos.dart';
 import 'package:medbook/features/clinical_reference/data/models/clinical_reference_dataset.dart';
 import 'package:medbook/features/clinical_reference/data/synchronization/clinical_reference_synchronizer.dart';
+import 'package:medbook/features/clinical_reference/domain/search/clinical_search_result.dart';
 import 'package:medbook/features/clinical_reference/domain/sync/sync_outcome.dart';
 
 void main() {
@@ -167,6 +168,11 @@ final class _LocalDataSource implements ClinicalReferenceLocalDataSource {
 
   @override
   Future<bool> hasCachedData() async => hasCache;
+
+  @override
+  Future<List<ClinicalSearchResult>> search({required String query}) async {
+    return const [];
+  }
 
   @override
   Future<void> replaceDataset({
