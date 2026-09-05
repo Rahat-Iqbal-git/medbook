@@ -39,7 +39,7 @@ class _HomeView extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Medbook')),
+      appBar: AppBar(title: const Text('Medbook'), centerTitle: true),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) => switch (state) {
           HomeLoading() => Center(
