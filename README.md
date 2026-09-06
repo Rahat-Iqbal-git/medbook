@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/readme/medbook-logo.png" alt="Medbook logo" width="180">
+</p>
+
 # Medbook
 
 Medbook is a small offline-first clinical reference built with Flutter. It
