@@ -168,6 +168,10 @@ final class _LocalDataSource implements ClinicalReferenceLocalDataSource {
   ClinicalReferenceDataset? storedDataset;
 
   @override
+  Future<ClinicalReferenceOverview> getOverview() async =>
+      const ClinicalReferenceOverview(diseases: [], medicines: []);
+
+  @override
   Future<bool> hasCachedData() async => hasCache;
 
   @override

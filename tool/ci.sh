@@ -25,6 +25,7 @@ run_check \
   --coverage \
   --min-coverage 80 \
   --report-on lib \
+  --exclude-coverage '**/*.g.dart' \
   --collect-coverage-from imports \
   --show-uncovered \
   --test-randomize-ordering-seed random

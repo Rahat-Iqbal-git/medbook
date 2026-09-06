@@ -153,6 +153,10 @@ final class _LocalDataSource implements ClinicalReferenceLocalDataSource {
   String? searchQuery;
 
   @override
+  Future<ClinicalReferenceOverview> getOverview() async =>
+      const ClinicalReferenceOverview(diseases: [], medicines: []);
+
+  @override
   Future<DiseaseDetails?> getDiseaseDetails({required int id}) async {
     return diseaseDetails;
   }

@@ -13,6 +13,31 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+val environmentSigningValues = listOf(
+    "ANDROID_KEYSTORE_PATH",
+    "ANDROID_KEYSTORE_ALIAS",
+    "ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD",
+    "ANDROID_KEYSTORE_PASSWORD",
+).associateWith(System::getenv)
+val hasEnvironmentReleaseSigning = environmentSigningValues.values.all {
+    !it.isNullOrBlank()
+}
+
+val localSigningKeys = listOf(
+    "storeFile",
+    "keyAlias",
+    "keyPassword",
+    "storePassword",
+)
+val hasLocalReleaseSigning = localSigningKeys.all {
+    !keystoreProperties.getProperty(it).isNullOrBlank()
+}
+
+// An assessment/reviewer build can retain release-mode optimizations without
+// distributing a production keystore. This flag must be deliberate.
+val useDebugReleaseSigning = System.getenv("ALLOW_DEBUG_RELEASE_SIGNING")
+    ?.equals("true", ignoreCase = true) == true
+
 android {
     namespace = "com.rahatiqbal.medbook"
     compileSdk = flutter.compileSdkVersion
@@ -40,17 +65,21 @@ android {
 
     signingConfigs {
         create("release") {
-            if (System.getenv("ANDROID_KEYSTORE_PATH") != null) {
-                storeFile = file(System.getenv("ANDROID_KEYSTORE_PATH"))
-                keyAlias = System.getenv("ANDROID_KEYSTORE_ALIAS")
-                keyPassword = System.getenv("ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD")
-                storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
-                
-            } else {
-                keyAlias = keystoreProperties["keyAlias"] as String?
-                keyPassword = keystoreProperties["keyPassword"] as String?
-                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-                storePassword = keystoreProperties["storePassword"] as String?
+            when {
+                hasEnvironmentReleaseSigning -> {
+                    storeFile = file(environmentSigningValues.getValue("ANDROID_KEYSTORE_PATH"))
+                    keyAlias = environmentSigningValues.getValue("ANDROID_KEYSTORE_ALIAS")
+                    keyPassword = environmentSigningValues.getValue(
+                        "ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD",
+                    )
+                    storePassword = environmentSigningValues.getValue("ANDROID_KEYSTORE_PASSWORD")
+                }
+                hasLocalReleaseSigning -> {
+                    keyAlias = keystoreProperties.getProperty("keyAlias")
+                    keyPassword = keystoreProperties.getProperty("keyPassword")
+                    storeFile = file(keystoreProperties.getProperty("storeFile"))
+                    storePassword = keystoreProperties.getProperty("storePassword")
+                }
             }
         }
     }
@@ -76,7 +105,16 @@ android {
 
     buildTypes {
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = when {
+                hasEnvironmentReleaseSigning || hasLocalReleaseSigning -> {
+                    signingConfigs.getByName("release")
+                }
+                useDebugReleaseSigning -> signingConfigs.getByName("debug")
+                // Leave release signing incomplete so debug/profile variants can run.
+                // An unsigned release task then fails in the Android build with its
+                // standard missing-signing-configuration error.
+                else -> signingConfigs.getByName("release")
+            }
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),

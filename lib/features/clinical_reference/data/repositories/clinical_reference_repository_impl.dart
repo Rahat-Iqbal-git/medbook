@@ -22,6 +22,15 @@ final class ClinicalReferenceRepositoryImpl
       _synchronizer.synchronize();
 
   @override
+  Future<Either<Failure, ClinicalReferenceOverview>> getOverview() async {
+    try {
+      return Right(await _localDataSource.getOverview());
+    } on Exception {
+      return const Left(LocalStorageFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, List<ClinicalSearchResult>>> search({
     required String query,
   }) async {
