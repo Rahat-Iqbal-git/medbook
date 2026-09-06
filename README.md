@@ -96,12 +96,35 @@ Tests use fakes and in-memory databases; they do not call the public endpoint.
 
 ## Android build
 
+### Assessment/reviewer APK
+
+Build an optimized release APK that is signed with the local Android debug key:
+
+```sh
+ALLOW_DEBUG_RELEASE_SIGNING=true flutter build apk --release \
+  --flavor production \
+  --target lib/main_production.dart \
+  --dart-define-from-file=env/prod.json
+```
+
+The Android build tools create this machine-local debug key automatically when
+needed, so reviewers do not need a keystore or any signing secret. This APK is
+appropriate for sideloaded assessment testing only: it cannot be used as a
+Google Play upload or to update an app signed with a production key.
+
+### Production-signed APK
+
 ```sh
 flutter build apk --release \
   --flavor production \
   --target lib/main_production.dart \
   --dart-define-from-file=env/prod.json
 ```
+
+Production signing credentials are intentionally not committed. Configure all
+four `ANDROID_KEYSTORE_*` environment variables, or create the ignored
+`android/key.properties` file with `storeFile`, `storePassword`, `keyAlias`,
+and `keyPassword` values before running this command.
 
 The APK is written to Flutter's usual `build/app/outputs/flutter-apk/`
 directory. iOS uses the same Dart code and the production scheme in Xcode.
