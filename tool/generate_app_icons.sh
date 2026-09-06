@@ -4,6 +4,7 @@ set -euo pipefail
 
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source_dir="$project_root/assets/app_icon"
+font_path="$project_root/assets/fonts/inter/Inter_28pt-Bold.ttf"
 work_dir="$(mktemp -d)"
 trap 'rm -rf "$work_dir"' EXIT
 
@@ -12,15 +13,25 @@ if ! command -v magick >/dev/null 2>&1; then
   exit 1
 fi
 
-for source_file in \
-  app_icon.png \
-  app_icon_foreground.png \
-  app_icon_monochrome.png; do
-  if [[ ! -f "$source_dir/$source_file" ]]; then
-    echo "Missing source icon: $source_dir/$source_file" >&2
-    exit 1
-  fi
-done
+if [[ ! -f "$font_path" ]]; then
+  echo "Missing icon font: $font_path" >&2
+  exit 1
+fi
+
+mkdir -p "$source_dir"
+
+# Keep the mark deliberately compact. Android enlarges adaptive foreground
+# layers when applying launcher masks, so generous source padding is important.
+magick -background none -fill '#FFFFFF' -font "$font_path" \
+  -pointsize 408 label:m -trim "$work_dir/mark.png"
+magick -size 1024x1024 xc:'#0022EE' "$work_dir/mark.png" \
+  -gravity center -composite -alpha off -depth 8 \
+  "$source_dir/app_icon.png"
+magick -size 1024x1024 xc:none "$work_dir/mark.png" \
+  -gravity center -composite -depth 8 \
+  "$source_dir/app_icon_foreground.png"
+cp "$source_dir/app_icon_foreground.png" \
+  "$source_dir/app_icon_monochrome.png"
 
 # Legacy Android launchers do not apply adaptive masks, so provide explicit
 # rounded-square and circular variants with a small transparent margin.
