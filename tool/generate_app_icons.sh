@@ -25,13 +25,32 @@ mkdir -p "$source_dir"
 magick -background none -fill '#FFFFFF' -font "$font_path" \
   -pointsize 408 label:m -trim "$work_dir/mark.png"
 magick -size 1024x1024 xc:'#0022EE' "$work_dir/mark.png" \
-  -gravity center -composite -alpha off -depth 8 \
+  -gravity center -composite -alpha off -depth 8 -strip \
   "$source_dir/app_icon.png"
 magick -size 1024x1024 xc:none "$work_dir/mark.png" \
-  -gravity center -composite -depth 8 \
+  -gravity center -composite -depth 8 -strip \
   "$source_dir/app_icon_foreground.png"
 cp "$source_dir/app_icon_foreground.png" \
   "$source_dir/app_icon_monochrome.png"
+
+# The iOS launch storyboard displays this asset at a fixed 96-point size. Keep
+# the white mark transparent so the storyboard supplies the full-screen color.
+launch_scales=(1 2 3)
+launch_canvas_sizes=(96 192 288)
+launch_mark_widths=(76 152 228)
+ios_launch_dir="$project_root/ios/Runner/Assets.xcassets/LaunchImage.imageset"
+for index in "${!launch_scales[@]}"; do
+  scale="${launch_scales[$index]}"
+  canvas_size="${launch_canvas_sizes[$index]}"
+  mark_width="${launch_mark_widths[$index]}"
+  scaled_mark="$work_dir/launch-mark-${scale}x.png"
+
+  magick "$work_dir/mark.png" -resize "${mark_width}x" -depth 8 \
+    "$scaled_mark"
+  magick -size "${canvas_size}x${canvas_size}" xc:none "$scaled_mark" \
+    -gravity center -composite -depth 8 -strip \
+    "$ios_launch_dir/LaunchImage@${scale}x.png"
+done
 
 # Legacy Android launchers do not apply adaptive masks, so provide explicit
 # rounded-square and circular variants with a small transparent margin.
@@ -55,7 +74,7 @@ android_source_sets=(main development staging)
 for source_set in "${android_source_sets[@]}"; do
   android_dir="$project_root/android/app/src/$source_set"
 
-  magick "$source_dir/app_icon.png" -resize 512x512 -depth 8 \
+  magick "$source_dir/app_icon.png" -resize 512x512 -depth 8 -strip \
     "$android_dir/ic_launcher-playstore.png"
 
   for index in "${!densities[@]}"; do
@@ -67,18 +86,35 @@ for source_set in "${android_source_sets[@]}"; do
 
     mkdir -p "$mipmap_dir" "$drawable_dir"
     magick "$work_dir/rounded.png" \
-      -resize "${legacy_size}x${legacy_size}" -depth 8 \
+      -resize "${legacy_size}x${legacy_size}" -depth 8 -strip \
       "$mipmap_dir/ic_launcher.png"
     magick "$work_dir/round.png" \
-      -resize "${legacy_size}x${legacy_size}" -depth 8 \
+      -resize "${legacy_size}x${legacy_size}" -depth 8 -strip \
       "$mipmap_dir/ic_launcher_round.png"
     magick "$source_dir/app_icon_foreground.png" \
-      -resize "${foreground_size}x${foreground_size}" -depth 8 \
+      -resize "${foreground_size}x${foreground_size}" -depth 8 -strip \
       "$drawable_dir/ic_launcher_foreground.png"
     magick "$source_dir/app_icon_monochrome.png" \
-      -resize "${foreground_size}x${foreground_size}" -depth 8 \
+      -resize "${foreground_size}x${foreground_size}" -depth 8 -strip \
       "$drawable_dir/ic_launcher_monochrome.png"
   done
+done
+
+# Older Android versions render the launch window drawable directly, so give
+# them a compact 96 dp splash mark without adaptive-icon padding.
+android_splash_sizes=(96 144 192 288 384)
+android_splash_mark_widths=(76 114 152 228 304)
+for index in "${!densities[@]}"; do
+  density="${densities[$index]}"
+  canvas_size="${android_splash_sizes[$index]}"
+  mark_width="${android_splash_mark_widths[$index]}"
+  scaled_mark="$work_dir/android-splash-mark-$density.png"
+
+  magick "$work_dir/mark.png" -resize "${mark_width}x" -depth 8 \
+    "$scaled_mark"
+  magick -size "${canvas_size}x${canvas_size}" xc:none "$scaled_mark" \
+    -gravity center -composite -depth 8 -strip \
+    "$project_root/android/app/src/main/res/drawable-$density/ic_splash_mark.png"
 done
 
 # The current iOS project uses Icon Composer. Its icon bundles compile this

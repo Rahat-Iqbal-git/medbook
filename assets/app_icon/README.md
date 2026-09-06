@@ -8,7 +8,8 @@ The background color is `#0022EE`. The compact lowercase `m` uses Inter Display
 Bold at 60% of the original type size and is centered with generous padding
 inside Android's adaptive-icon safe area.
 
-Regenerate the native Android and iOS resources from the project root:
+Regenerate the native Android and iOS launcher and splash resources from the
+project root:
 
 ```sh
 ./tool/generate_app_icons.sh
