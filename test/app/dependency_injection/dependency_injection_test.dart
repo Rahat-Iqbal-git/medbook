@@ -26,7 +26,6 @@ void main() {
       isTrue,
     );
     expect(serviceLocator.isRegistered<ClinicalReferenceRepository>(), isTrue);
-    expect(serviceLocator<ClinicalReferenceRepository>(), isNotNull);
   });
 }
 

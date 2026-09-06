@@ -1,11 +1,15 @@
 {
   "fill-specializations" : [
     {
-      "value" : "automatic"
+      "value" : {
+        "solid" : "srgb:0.00000,0.13333,0.93333,1.00000"
+      }
     },
     {
       "appearance" : "dark",
-      "value" : "automatic"
+      "value" : {
+        "solid" : "srgb:0.00000,0.13333,0.93333,1.00000"
+      }
     }
   ],
   "groups" : [
@@ -28,10 +32,10 @@
             }
           ],
           "glass" : false,
-          "image-name" : "Logo.svg",
+          "image-name" : "Logo.png",
           "name" : "Logo",
           "position" : {
-            "scale" : 1.8,
+            "scale" : 1,
             "translation-in-points" : [
               0,
               0
